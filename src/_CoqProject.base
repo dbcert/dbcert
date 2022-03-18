@@ -1,3 +1,4 @@
 -R . DBCert
 
+theories/ToEJson.v
 extraction/SQLJSExtraction.v

@@ -38,7 +38,7 @@ Extract Constant DesignerRule.designer_rule_to_camp_rule => "(fun fruntime x -> 
 (* Our modules *)
 
 From SQLFS Require Values.
-From SQLToNRACert Require ToEJson.
+Require ToEJson.
 
 (* To bypass a bug in the extraction *)
 Extract Constant Values.NullValues.FVal => "(Fset.build coq_OVal : value Fset.coq_Rcd)".
