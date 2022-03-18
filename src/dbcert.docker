@@ -1,0 +1,47 @@
+############################################################
+# Dockerfile to build DBcert docker image
+# Based on the debian image
+# Build with `docker build -t dbcert -f dbcert.docker .`
+# Run with `docker run -ti --rm -e DISPLAY=host.docker.internal:0 dbcert bash`
+# Warning:
+#   To build the container, dockers needs more that 2GB of memory (8GB is enough).
+#   On Mac, see: https://docs.docker.com/docker-for-mac/#advanced.
+############################################################
+
+FROM coqorg/coq:8.11.2
+USER coq
+
+##################### PREREQUISITES ########################
+
+RUN sudo apt-get -y update && \
+    sudo apt-get -y install m4 pkg-config libncurses5-dev bubblewrap
+
+####################   INSTALL npm   #######################
+WORKDIR /home/coq
+
+RUN curl -sL https://deb.nodesource.com/setup_12.x  | sudo -E bash - && \
+    sudo apt-get -y install nodejs
+
+####################   INSTALL opam  #######################
+
+RUN opam switch 4.07.1+flambda && \
+    eval $(opam env) && \
+    opam repo add coq-released --all-switches https://coq.inria.fr/opam/released || true && \
+    opam update -q || true && \
+    opam install -y --jobs=2 dune menhir base64 js_of_ocaml js_of_ocaml-ppx re calendar uri && \
+    opam install -y coq-jsast.2.0.0
+
+############## SET UP DEFAULT CONTAINER VARS ##############
+
+RUN opam config env >> /home/coq/.profile && \
+    bash -c "source /home/coq/.profile" && \
+    mkdir -p /home/coq/dbcert
+
+# Copy dbcert files in `workdir`
+COPY --chown=coq . /home/coq/dbcert
+
+###################### INSTALL dbcert #######################
+
+WORKDIR /home/coq/dbcert
+
+RUN bash -c "source /home/coq/.profile && make"

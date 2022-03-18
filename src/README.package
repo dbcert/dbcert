@@ -1,0 +1,119 @@
+# DBCert
+
+A Coq specification and formalization of a compiler from SQL to ECMA 6.
+
+
+# Compile DBCert
+
+If not done yet, ungzip and untar the DBCert package:
+```
+tar xvfz dbcert-0.1.0.tar.gz
+```
+
+This should create a new `dbcert-0.1.0` directory.
+
+
+## Build with docker
+
+The easiest way to compile DBCert is to use Docker (https://www.docker.com).
+
+In the directory `dbcert-0.1.0`, build the docker image with the following command (it takes a while):
+```
+docker build -t dbcert -f dbcert.docker .
+```
+
+Then you can launch a shell in the container where DBCert in installed as follows:
+```
+docker run -ti --rm -e DISPLAY=host.docker.internal:0 dbcert bash
+```
+
+In this shell, you can compile and execute an example query with:
+```
+make test
+```
+
+Warning: to build the image, dockers needs more that 2GB of memory (8GB is enough).
+On Mac, it is possible to control the resources in the advance panel of the preferences (see: https://docs.docker.com/docker-for-mac/#advanced).
+
+It has been tried with Docker Desktop 2.1.0.5 (engine: 19.03.5, machine: 0.16.2).
+
+## Build from source
+
+### Requirements
+
+This work is known to compile with Node.js 10, OCaml-4.09.1 and Coq-8.11.*. See below for installation instruction.
+
+#### Install Node.js
+
+We recommend Node.js version 10, which can be downloaded and installed from [https://nodejs.org/en/download/releases/](https://nodejs.org/en/download/releases/).
+
+If you already have Node.js and `nvm` installed, you can switch to Node 10 with:
+```
+nvm install 10
+```
+
+#### Install OCaml
+
+We recommend installing OCaml through opam.
+
+```
+sudo curl -sL https://raw.githubusercontent.com/ocaml/opam/master/shell/install.sh > install.sh
+echo | sudo sh install.sh
+eval $(opam env)
+```
+
+If you have Opam already installed, you can switch to OCaml 4.09.1 with:
+
+```
+opam switch create 4.09.1 || true
+opam switch set 4.09.1
+opam update || true
+opam upgrade || true
+```
+
+#### Install OCaml dependencies
+
+```
+opam install -y --jobs=2 dune menhir base64 js_of_ocaml js_of_ocaml-ppx re calendar uri
+```
+
+#### Install Coq dependencies
+
+```
+opam repo add coq-released https://coq.inria.fr/opam/released
+opam install -y coq.8.11.2 coq-jsast.2.0.0
+```
+
+### Compile DBCert
+
+From the directory `dbcert-0.1.0`, compile DBCert with:
+
+```
+make
+```
+
+This will compile the full mechanization, extract it to OCaml, and produce an executable `./extraction/dbcert`. Note that compilation can take quite a while.
+
+
+# Use DBCert
+
+To compile SQL to JavaScript and link the runtime:
+```
+./dbcert -link tests/simple/org1.sql
+```
+To run the compiled JavaScript in the `tests/simple/db1.json` database:
+```
+node ./dbcertRun.js tests/simple/org1.js tests/simple/db1.json
+```
+
+# Examples
+
+We provide some examples in the `tests` directory. They can be run as presented in the previous section.
+- The directory `simple` contains simple queries to get started, named  `orgX.sql`. They can be run in the small `db1.json` database, or in the bigger `db1big.json` database to evaluate performance.
+- The directory `null` contains, in the file `queries_null.sql`, non-trivial queries involving the SQL `null` value, taken from [12]. They should be run in the `dbnull.json` database.
+- The directory `nested` contains, in the file `queries_nested.sql`, non-trivial queries involving nested, correlated queries, taken from [4]. They should be run in the `dbnested.json` database.
+
+# Code organization
+
+See the appendix of the paper for a detailed description of the code
+organization.

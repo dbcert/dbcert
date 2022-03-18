@@ -1,0 +1,8 @@
+clean::
+	rm -f extraction/.*.aux
+
+cleanall::
+	$(MAKE) -C extraction cleanall
+	rm -f _CoqProject
+
+INSTALLDEFAULTROOT=DBCert

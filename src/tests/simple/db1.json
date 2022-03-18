@@ -1,0 +1,12 @@
+{
+  "employees": [
+    { "name": "John", "age": {"$nat":34} },
+    { "name": "Joan", "age": {"$nat":32} },
+    { "name": "Jim", "age": {"$nat":33} },
+    { "name": "Jack", "age": {"$nat":32} },
+    { "name": null, "age": {"$nat":35} },
+    { "name": "Justin", "age": {"$nat":34} },
+    { "name": "Jude", "age": {"$nat":34} },
+    { "name": "Jill", "age": null }
+  ]
+}
