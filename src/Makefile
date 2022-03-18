@@ -11,7 +11,7 @@ extr: .depend.extr
 	$(OCAMLDEP) $(MLFILES) > .depend.extr
 	$(OCAMLDEP) $(MLIFILES) >> .depend.extr
 
-proofextr: Makefile.coq qcert
+proofextr: Makefile.coq
 	$(MAKE) -f Makefile.coq -C .
 
 # include .depend.extr
@@ -27,11 +27,13 @@ CMI=$(MLIFILES:%.mli=%.cmi)
 CMX=$(MLFILES:%.ml=%.cmx)
 CMO=$(MLFILES:%.ml=%.cmo)
 QCMX=qcert_lib.cmxa
-DCMX=utils.cmx basics.cmx sqlcontext.cmx coq_sql_algebra.cmx sql_ast.cmx sql_parser.cmx sql_lexer.cmx toCoq.cmx sqlparser.cmx
+DCMX=plugins_datacert.cmxa
+CCMX=threads.cmxa dynlink.cmxa clib.cmxa config.cmxa lib.cmxa gramlib.cmxa kernel.cmxa library.cmxa engine.cmxa pretyping.cmxa interp.cmxa proofs.cmxa parsing.cmxa tactics.cmxa toplevel.cmxa printing.cmxa vernac.cmxa stm.cmxa
 
 OTHERLIB=-linkpkg -package calendar,uri
-QCERTLIB=-I $(QCERT)/_build/default/compiler -I $(QCERT)/_build/default/compiler/.qcert_lib.objs/byte -open Qcert_lib
-DCERTLIB=-I ./extraction
+QCERTLIB=-I +../coq-qcert -open Qcert_lib
+DCERTLIB=-I +../coq/user-contrib/SQLToNRACert/plugins -open Plugins_datacert -I ./extraction
+COQLIB=-I +threads -I +../coq/gramlib/.pack -I +../coq/proofs -I +../coq/library -I +../coq/user-contrib -I +../coq/vernac -I +../coq/stm -I +../coq/pretyping -I +../coq/config -I +../coq/printing -I +../coq/lib -I +../coq/interp -I +../coq/clib -I +../coq/parsing -I +../coq/engine -I +../coq/toplevel -I +../coq/tactics -I +../coq/kernel -I +../coq/kernel/byterun
 
 FLAGS=-rectypes
 COMPILEFLAGS=-cclib -lunix
@@ -39,7 +41,6 @@ COMPILEFLAGS=-cclib -lunix
 OCAMLC=ocamlfind ocamlc
 OCAMLOPT=ocamlfind ocamlopt
 OCAMLDEP=ocamlfind ocamldep -I extraction
-# OCAMLDEP=ocamlfind ocamldep -slash -ml-synonym .mlpack -I datacert/plugins -I datacert/plugins/common -I datacert/plugins/sql_parser -I extraction
 
 cli: $(PROGRAM)
 
@@ -55,10 +56,10 @@ cli: $(PROGRAM)
 	$(OCAMLC) -c $(FLAGS) $(OTHERLIB) $(QCERTLIB) $(DCERTLIB) $<
 
 $(PROGRAM): $(CMI) $(CMO) $(CMX)
-	$(OCAMLOPT) $(FLAGS) $(OTHERLIB) $(QCERTLIB) $(DCERTLIB) -o $@ $(COMPILEFLAGS) $(QCMX) $(DCMX) $(CMX)
+	$(OCAMLOPT) $(FLAGS) $(OTHERLIB) $(QCERTLIB) $(COQLIB) $(DCERTLIB) -o $@ $(COMPILEFLAGS) $(QCMX) $(CCMX) $(DCMX) $(CMX)
 
-# Clean everything but Q*cert
-cleanmost: Makefile.coq
+# Clean everything
+clean: Makefile.coq
 	$(MAKE) -f Makefile.coq cleanall
 	$(MAKE) -C extraction cleanall
 	rm -f $(PROGRAM)
@@ -66,29 +67,9 @@ cleanmost: Makefile.coq
 	rm -f Makefile.coq.conf
 	rm -f _CoqProject
 
-# Clean everything
-cleanall:
-	$(MAKE) -C $(QCERT) cleanall
-	$(MAKE) cleanmost
-
 # Generate _CoqProject and Makefile.coq
 Makefile.coq Makefile.coq.conf: _CoqProject $(FILES)
 	coq_makefile -f _CoqProject $(FILES) -o Makefile.coq INSTALLDEFAULTROOT = DBCert
-	(echo 'VERSION=1.0') >> Makefile.coq
-	(echo 'NAME=datacert-$(VERSION)') >> Makefile.coq
-	(echo 'export::  ') >> Makefile.coq
-	(echo '	mkdir -p export/$(NAME)') >> Makefile.coq
-	(echo '	for i in `find . -type d | grep -v export | grep -v \.svn `; do mkdir -p export/$(NAME)/$$i; done') >> Makefile.coq
-	(echo '	cp Licence*.txt Makefile export/$(NAME)') >> Makefile.coq
-	(echo '	for i in `find . -name \*.v | grep -v export | grep -v \.svn`; do cp $$i export/$(NAME)/$$i; done') >> Makefile.coq
-	(echo '	cd export; tar zcf $(NAME).tar.gz $(NAME)') >> Makefile.coq
-	(echo '.PHONY: doc doc/glob') >> Makefile.coq
-	(echo 'doc/glob :') >> Makefile.coq
-	(echo '	rm -f $(VOFILES)') >> Makefile.coq
-	(echo '	$(MAKE) COQDOCFLAGS="-dump-glob doc/glob" all') >> Makefile.coq
-	(echo '	rm -f doc/*.html') >> Makefile.coq
-	(echo 'doc : doc/glob') >> Makefile.coq
-	(echo '	 $(COQDOC) --glob-from doc/glob -d doc $(VFILES)') >> Makefile.coq
 
 _CoqProject: Makefile.conf _CoqProject.base
 	cp _CoqProject.base _CoqProject

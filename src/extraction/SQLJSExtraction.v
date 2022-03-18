@@ -20,11 +20,11 @@ Require Extraction.
 Extraction Language OCaml.
 
 Require Import ExtrOcamlBasic ExtrOcamlString ExtrOcamlNatInt ExtrOcamlZInt.
-Require Import Qcert.Utils.Float ExtrOcamlFloatNatIntZInt.
+From Qcert Require Import Float ExtrOcamlFloatNatIntZInt.
 Extraction Blacklist String List.
 
-Require Import Digits.
-Require Import TechRule DesignerRule.
+Require Import Qcert.Utils.Digits.
+From Qcert Require Import TechRule DesignerRule.
 
 Extract Inlined Constant PrimFloat.neg_infinity => "Float.neg_infinity".
 
@@ -37,7 +37,8 @@ Extract Constant DesignerRule.designer_rule_to_camp_rule => "(fun fruntime x -> 
 
 (* Our modules *)
 
-Require Values ToEJson.
+From SQLFS Require Values.
+From SQLToNRACert Require ToEJson.
 
 (* To bypass a bug in the extraction *)
 Extract Constant Values.NullValues.FVal => "(Fset.build coq_OVal : value Fset.coq_Rcd)".
