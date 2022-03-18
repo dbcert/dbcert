@@ -1,0 +1,46 @@
+opam-version: "2.0"
+maintainer: "Chantal.Keller@lri.fr"
+homepage: "https://github.com/dbcert/dbcert"
+dev-repo: "git+https://github.com/dbcert/dbcert.git"
+bug-reports: "https://github.com/dbcert/dbcert/-/issues"
+authors: ["Véronique Benzaken <veronique.benzaken@universite-paris-saclay.fr>"
+          "Évelyne Contejean <evelyne.contejean@universite-paris-saclay.fr>"
+          "Houssem Hachmaoui"
+          "Chantal Keller <Chantal.Keller@lri.fr>"
+          "Louis Mandel <lmandel@us.ibm.com>"
+          "Avraham Shinnar <shinnar@us.ibm.com>"
+          "Jérôme Siméon <jerome.simeon@docusign.com>"
+]
+license: "Apache 2.0"
+build: [
+  [make]
+]
+install: [
+  [make "install"]
+]
+depends: [
+  "coq" {= "8.11.2"}
+  "coq-qcert"
+  "coq-sqlformalsemantics"
+  "coq-sqltonracert"
+]
+pin-depends: [
+  [ "coq-qcert.2.1.1" "git+https://github.com/querycert/qcert.git#v2.1.1" ]
+  [ "coq-sqlformalsemantics.dev" "git+https://framagit.org/formaldata/sqlformalsemantics.git#master" ]
+  [ "coq-sqltonracert.dev" "git+https://framagit.org/formaldata/sqltonracert.git#main" ]
+]
+tags: [
+  "category:Miscellaneous/Coq Extensions"
+  "keyword:databases"
+  "keyword:queries"
+  "keyword:relational"
+  "keyword:compiler"
+  "logpath:DBCert"
+]
+synopsis: "A formally verified translation from canonical SQL to JavaScript, in Coq"
+description: """
+DBCert is a formally verified translation from canonical SQL to JavaScript, in Coq. It is based on SQLToNRACert, a verified compiler from SQL to a nested relational algebra; and Q*Cert, a compiler from databases providing multiple frontends and backends.
+"""
+url {
+  src: "git+https://github.com/dbcert/dbcert.git"
+}
