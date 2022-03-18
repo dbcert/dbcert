@@ -11,7 +11,7 @@ authors: ["Véronique Benzaken <veronique.benzaken@universite-paris-saclay.fr>"
           "Avraham Shinnar <shinnar@us.ibm.com>"
           "Jérôme Siméon <jerome.simeon@docusign.com>"
 ]
-license: "Apache 2.0"
+license: "Apache-2.0"
 build: [
   [make]
 ]
