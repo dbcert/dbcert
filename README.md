@@ -51,7 +51,7 @@ opam repo add coq-released https://coq.inria.fr/opam/released
 Have OCaml and Coq executables in your path:
 
 ```
-opam install .
+opam install -y .
 ```
 
 <!-- ## Tests -->
