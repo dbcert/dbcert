@@ -58,6 +58,12 @@ cli: $(PROGRAM)
 $(PROGRAM): $(CMI) $(CMO) $(CMX)
 	$(OCAMLOPT) $(FLAGS) $(OTHERLIB) $(QCERTLIB) $(COQLIB) $(DCERTLIB) -o $@ $(COMPILEFLAGS) $(QCMX) $(CCMX) $(DCMX) $(CMX)
 
+# Install dbcert
+BIN=$(dir $(shell which ocamlopt))
+
+install: cli
+	cp $(PROGRAM) $(BIN)
+
 # Clean everything
 clean: Makefile.coq
 	$(MAKE) -f Makefile.coq cleanall
