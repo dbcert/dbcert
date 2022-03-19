@@ -2,7 +2,6 @@
 
 A runtime and a runner for [the Coq certified compiler from SQL to JavaScript](https://framagit.org/formaldata/sqltonracert).
 
-README UNDER PROGRESS
 
 ## Requirements
 
@@ -23,67 +22,72 @@ opam switch set 4.09.1
 opam update || true
 ```
 
-### Install OCaml dependencies
-
-```
-opam install -y --jobs=2 dune menhir base64 js_of_ocaml js_of_ocaml-ppx re calendar uri
-```
-
-### Install Coq dependencies
-
+### Prepare Coq dependencies
 ```
 opam repo add coq-released https://coq.inria.fr/opam/released
-opam install -y coq.8.11.2 coq-jsast.2.0.0
 ```
 
-### Install Q*cert
+<!-- ### Install OCaml dependencies -->
 
-You need [Q*Cert](https://github.com/querycert/qcert), on the branch `master`.
+<!-- ``` -->
+<!-- opam install -y --jobs=2 dune menhir base64 js_of_ocaml js_of_ocaml-ppx re calendar uri -->
+<!-- ``` -->
 
-You have to set the path to Q*cert in the `Makefile.conf` file.
+<!-- ### Install Coq dependencies -->
+
+<!-- ``` -->
+<!-- opam repo add coq-released https://coq.inria.fr/opam/released -->
+<!-- opam install -y coq.8.11.2 coq-jsast.2.0.0 -->
+<!-- ``` -->
+
+<!-- ### Install Q*cert -->
+
+<!-- You need [Q*Cert](https://github.com/querycert/qcert), on the branch `master`. -->
+
+<!-- You have to set the path to Q*cert in the `Makefile.conf` file. -->
 
 ### Compilation
 
 Have OCaml and Coq executables in your path:
 
 ```
-make
+opam install .
 ```
 
-## Tests
+<!-- ## Tests -->
 
-After compilation try the compiler with:
+<!-- After compilation try the compiler with: -->
 
-```
-make test
-```
+<!-- ``` -->
+<!-- make test -->
+<!-- ``` -->
 
 ## Examples
 
 To compile SQL to JavaScript:
 ```
-./dbcert tests/simple/org1.sql
+dbcert src/tests/simple/org1.sql
 ```
 To compile SQL to JavaScript and link the runtime:
 ```
-./dbcert -link tests/simple/org1.sql
+dbcert -link src/tests/simple/org1.sql
 ```
 To run the compiled JavaScript:
 ```
-node ./dbcertRun.js tests/simple/org1.js tests/simple/db1.json
+node src/dbcertRun.js src/tests/simple/org1.js src/tests/simple/db1.json
 ```
 
-## Packaging
+<!-- ## Packaging -->
 
-To create a `.tgz` with all the source code for distribution:
-```
-make package
-```
+<!-- To create a `.tgz` with all the source code for distribution: -->
+<!-- ``` -->
+<!-- make package -->
+<!-- ``` -->
 
-To test a full compilation before packaging:
-```
-TEST=true make package
-```
+<!-- To test a full compilation before packaging: -->
+<!-- ``` -->
+<!-- TEST=true make package -->
+<!-- ``` -->
 
 ## License
 
