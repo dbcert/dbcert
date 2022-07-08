@@ -50,6 +50,10 @@ fun a ->
   | Attr_string s -> s
   | Attr_Z s -> s
   | Attr_bool s -> s
+  | Attr_float s -> s
 ".
+
+(* Flocq floats are exported as OCaml floats *)
+Extract Constant OrderedSet.float_compare => "fun f1 f2 -> let c = Float.compare f1 f2 in if c = 0 then Eq else if c < 0 then Lt else Gt".
 
 Extraction "extraction/sql_query_to_js.ml" ToEJson.sql_query_to_js ToEJson.sql_query_to_nra.

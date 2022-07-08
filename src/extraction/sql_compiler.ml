@@ -38,6 +38,7 @@ let typed_aname_to_extracted : Basics.typed_aname -> Sql_query_to_js.Tuple.attri
   | (n, Basics.TInt) -> Obj.magic (Sql_query_to_js.Attr_Z (Util.char_list_of_string n))
   | (n, Basics.TString) -> Obj.magic (Sql_query_to_js.Attr_string (Util.char_list_of_string n))
   | (n, Basics.TBool) -> Obj.magic (Sql_query_to_js.Attr_bool (Util.char_list_of_string n))
+  | (n, Basics.TDouble) -> Obj.magic (Sql_query_to_js.Attr_float (Util.char_list_of_string n))
 
 let typed_attribute_name_to_extracted : Basics.typed_attribute_name -> Sql_query_to_js.Tuple.attribute =
   fun ((r, n), ty) ->
@@ -54,9 +55,13 @@ let predicate_to_extracted : Basics.predicate -> Sql_query_to_js.aggterm list ->
        any NRAEnv expression *)
     match Basics.string_of_predicate p t with
       | "<" -> ("<", l)
+      | "<." -> ("<.", l)
       | "<=" -> ("<=", l)
+      | "<=." -> ("<=.", l)
       | ">" -> ("<", List.rev l)
+      | ">." -> ("<.", List.rev l)
       | ">=" -> ("<=", List.rev l)
+      | ">=." -> ("<=.", List.rev l)
       | "=" -> ("=", l)
       | "<>" -> ("<>", l)
       | p -> (p, l)
@@ -74,6 +79,7 @@ let value_to_extracted : Basics.value -> Sql_query_to_js.Tuple.value =
                  | Basics.VString s -> Sql_query_to_js.NullValues.Value_string (Some (Util.char_list_of_string s))
                  | Basics.VInt i -> Sql_query_to_js.NullValues.Value_Z (Some i)
                  | Basics.VBool b -> Sql_query_to_js.NullValues.Value_bool (Some b)
+                 | Basics.VFloat f -> Sql_query_to_js.NullValues.Value_float (Some f)
              )
 
 let rec funterm_to_extracted : Coq_sql_algebra.funterm -> Sql_query_to_js.funterm = function
@@ -159,6 +165,7 @@ let schema_to_extracted schema =
                    | Basics.TString -> Sql_query_to_js.Attr_string ra
                    | Basics.TInt -> Sql_query_to_js.Attr_Z ra
                    | Basics.TBool -> Sql_query_to_js.Attr_bool ra
+                   | Basics.TDouble -> Sql_query_to_js.Attr_float ra
                ) attributes
     in
     Sql_query_to_js.Fset.mk_set Sql_query_to_js.oAN Sql_query_to_js.fAN la
@@ -188,6 +195,7 @@ let pp_pair elt1 elt2 out (x,y) = Printf.fprintf out "(%a,%a)" elt1 x elt2 y
 let pp_bool out b = Printf.fprintf out "%B" b
 let pp_char_list out s = Printf.fprintf out "%s" (Util.string s)
 let pp_int out i = Printf.fprintf out "%d" i
+let pp_float out f = Printf.fprintf out "%f" f
 
 let pp_set_op out = function
   | Sql_query_to_js.Union -> Printf.fprintf out "Union"
@@ -200,6 +208,7 @@ let pp_tuple_attribute out (n:Sql_query_to_js.Tuple.attribute) =
     | Sql_query_to_js.Attr_Z n -> Printf.fprintf out "(Attr_Z \"%s\"%%string)" (Util.string n)
     | Sql_query_to_js.Attr_string n -> Printf.fprintf out "(Attr_string \"%s\"%%string)" (Util.string n)
     | Sql_query_to_js.Attr_bool n -> Printf.fprintf out "(Attr_bool \"%s\"%%string)" (Util.string n)
+    | Sql_query_to_js.Attr_float n -> Printf.fprintf out "(Attr_float \"%s\"%%string)" (Util.string n)
 
 let pp_tuple_aggregate out (a:Sql_query_to_js.Tuple.aggregate) =
   Printf.fprintf out "%s" (Util.string (Obj.magic a))
@@ -209,6 +218,7 @@ let pp_tuple_value out (v:Sql_query_to_js.Tuple.value) =
     | Sql_query_to_js.NullValues.Value_bool v -> Printf.fprintf out "(Value_bool %a)" (pp_option pp_bool) v
     | Sql_query_to_js.NullValues.Value_string v -> Printf.fprintf out "(Value_string %a)" (pp_option pp_char_list) v
     | Sql_query_to_js.NullValues.Value_Z v -> Printf.fprintf out "(Value_Z %a)" (pp_option pp_int) v
+    | Sql_query_to_js.NullValues.Value_float v -> Printf.fprintf out "(Value_float %a)" (pp_option pp_float) v
 
 let pp_tuple_symbol out (s:Sql_query_to_js.Tuple.symbol) =
   match Obj.magic s with
