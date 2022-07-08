@@ -92,3 +92,13 @@ node src/dbcertRun.js src/tests/simple/org1.js src/tests/simple/db1.json
 ## License
 
 This code is released under the Apache 2.0 license (see LICENSE for details).
+
+
+## Companion paper
+
+[Translating Canonical SQL to Imperative Code in
+Coq](https://arxiv.org/abs/2203.08941), Véronique Benzaken, Évelyne
+Contejean, Mohammed Houssem Hachmaoui, Chantal Keller, Louis Mandel,
+Avraham Shinnar and Jérôme Siméon, [Proceedings of the ACM on
+Programming Languages, OOPSLA
+2022](https://2022.splashcon.org/track/splash-2022-oopsla).
