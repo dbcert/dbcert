@@ -21,10 +21,6 @@ Require Import List NArith String.
 Require Import Utils Qcert.Data.DataRuntime Qcert.NRAEnv.NRAEnvRuntime Qcert.Imp.ImpRuntime.
 Require Import Qcert.Driver.CompCorrectness.
 
-(* Add LoadPath *)
-(*     "../../datacert/plugins/" *)
-(*   as Datacert.plugins. *)
-
 From SQLFS Require Import OrderedSet FiniteSet FiniteBag FiniteCollection
         Tree Formula DExpressions ListSort.
 From SQLFS Require Import FlatData.
@@ -69,6 +65,18 @@ Definition nraenv2imp_no_opt : query -> query :=
 
 Definition imp2JS : query -> query :=
   @EnhancedCompiler.QDriver.compile_from_source_target bm enhanced_foreign_typing config middle target.
+
+
+(* We suppose some axioms on floats, see
+     https://framagit.org/formaldata/sqltonracert/-/blob/main/src/jsql/aux/AxiomFloat.v?ref_type=heads
+   for details *)
+
+Axiom FAAC : AxiomFloat.float_add_assoc_comm.
+
+Local Notation tnull_AN := (@tnull_AN FAAC).
+Local Notation tnull_ATN := (@tnull_ATN FAAC).
+Local Notation tnull_FN := (@tnull_FN FAAC).
+
 
 Section ToEJson.
 

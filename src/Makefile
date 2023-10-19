@@ -30,7 +30,7 @@ QCMX=qcert_lib.cmxa
 DCMX=plugins_datacert.cmxa
 CCMX=threads.cmxa dynlink.cmxa clib.cmxa config.cmxa lib.cmxa gramlib.cmxa kernel.cmxa library.cmxa engine.cmxa pretyping.cmxa interp.cmxa proofs.cmxa parsing.cmxa tactics.cmxa toplevel.cmxa printing.cmxa vernac.cmxa stm.cmxa
 
-OTHERLIB=-linkpkg -package calendar,uri
+OTHERLIB=-linkpkg -package calendar,uri,str
 QCERTLIB=-I +../coq-qcert -open Qcert_lib
 DCERTLIB=-I +../coq/user-contrib/SQLToNRACert/plugins -open Plugins_datacert -I ./extraction
 COQLIB=-I +threads -I +../coq/gramlib/.pack -I +../coq/proofs -I +../coq/library -I +../coq/user-contrib -I +../coq/vernac -I +../coq/stm -I +../coq/pretyping -I +../coq/config -I +../coq/printing -I +../coq/lib -I +../coq/interp -I +../coq/clib -I +../coq/parsing -I +../coq/engine -I +../coq/toplevel -I +../coq/tactics -I +../coq/kernel -I +../coq/kernel/byterun
